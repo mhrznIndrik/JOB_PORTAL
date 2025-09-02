@@ -1,9 +1,67 @@
 {% if messages %}
+<div class="fixed top-4 right-4 z-50 space-y-3 w-full max-w-md">
   {% for message in messages %}
-    <div class="message-container">
-      <div class="message message-{{ message.level_tag }}">
-        {{ message }}
+  <div class="animate-fade-in-up" style="animation-delay: {{ forloop.counter0|add:'0.1' }}s;">
+    <div class="{% if message.tags == 'success' %}bg-gradient-to-br from-green-500 to-green-600 border-green-700
+                            {% elif message.tags == 'error' %}bg-gradient-to-br from-red-500 to-red-600 border-red-700
+                            {% elif message.tags == 'warning' %}bg-gradient-to-br from-yellow-500 to-yellow-600 border-yellow-700
+                            {% elif message.tags == 'info' %}bg-gradient-to-br from-blue-500 to-blue-600 border-blue-700
+                            {% else %}bg-gradient-to-br from-gray-500 to-gray-600 border-gray-700{% endif %}
+                            text-white rounded-lg border p-4 shadow-lg">
+      <div class="flex items-start justify-between">
+        <div class="flex items-start gap-3">
+          <div class="flex-shrink-0">
+            {% if message.tags == 'success' %}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% elif message.tags == 'error' %}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% elif message.tags == 'warning' %}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z">
+              </path>
+            </svg>
+            {% else %}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% endif %}
+          </div>
+          <div class="flex-1">
+            <p class="font-semibold capitalize">{{ message.tags|default:"Notice" }}</p>
+            <p class="opacity-90">{{ message }}</p>
+          </div>
+        </div>
+        <button onclick="this.closest('.animate-fade-in-up').remove()"
+          class="p-1 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-200 hover:scale-110">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="h-1 bg-white bg-opacity-30 rounded-b-lg mt-3 overflow-hidden">
+        <div class="h-full bg-white bg-opacity-80 animate-pulse"></div>
       </div>
     </div>
+  </div>
   {% endfor %}
+</div>
 {% endif %}
+
+<script>
+  // Auto dismiss after 5 seconds
+  setTimeout(() => {
+    // Only target alert messages, not the entire page content
+    document.querySelectorAll('.fixed.top-4.right-4 .animate-fade-in-up').forEach(el => {
+      el.classList.add('opacity-0', 'translate-y-2', 'transition-all', 'duration-500');
+      setTimeout(() => el.remove(), 500);
+    });
+  }, 5000);
+</script>

@@ -6,98 +6,274 @@
 
 {% include 'header.html' %}
 
-<div class="container">
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Portfolio</th>
-                    <th scope="col">CV</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">View Advert</th>
-                    <th scope="col">Date Applied</th>
-                    <th scope="col">Make Decision</th>
-                </tr>
-            </thead>
-            <tbody>
-              
-                {% for application in applications %}
-                    <tr>
-                        <td>{{ application.name }}</td>
-                        <td>{{ application.email }}</td>
-                        <td><a href="{{ application.portfolio_url }}" target="_blank">View Portfolio</a></td>
-                        <td>
-                            <a href="{{ application.cv.url }}" target="_blank">
-                                Download CV
-                            </a>
-                        </td>
-                        <td>{{ application.status }}</td>
-                        <td>
-                            <a href="{% url 'job_advert' application.id %}" target="_blank">
-                                View
-                            </a>
-                        </td>
-                        <td>{{ application.created_at }}</td>
-                        <td>
-                            <span>
-                                <form method="post" action="{% url 'decide' application.id %}">
+<main class="py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6">
+                <i class="fas fa-users text-2xl text-white"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Job Applications</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Manage and monitor all applications for your job postings. Review candidates, make decisions, and
+                track the hiring process.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-users text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Applications</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ applications|length }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-eye text-green-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">New Applications</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            {% for app in applications %}
+                            {% if app.status|default:"" == "APPLIED" %}
+                            {{ forloop.counter }}
+                            {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-purple-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Interviews</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            {% for app in applications %}
+                            {% if app.status|default:"" == "INTERVIEW" %}
+                            {{ forloop.counter }}
+                            {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Rejected</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            {% for app in applications %}
+                            {% if app.status|default:"" == "REJECTED" %}
+                            {{ forloop.counter }}
+                            {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 px-8 py-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <i class="fas fa-table"></i>
+                    Applications Overview
+                </h2>
+                <p class="text-blue-100 mt-2">Review and manage all job applications</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Name</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Email</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Portfolio</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                CV</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Status</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                View Advert</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Date Applied</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Make Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for application in applications %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-user text-blue-600"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ application.name }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ application.email }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{{ application.portfolio_url }}" target="_blank"
+                                    class="text-blue-600 hover:text-blue-900 transition-colors">
+                                    <i class="fas fa-external-link-alt mr-1"></i>
+                                    View Portfolio
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{{ application.cv.url }}" target="_blank"
+                                    class="text-green-600 hover:text-green-900 transition-colors">
+                                    <i class="fas fa-download mr-1"></i>
+                                    Download CV
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                            {% if application.status|default:'' == 'APPLIED' %}bg-blue-100 text-blue-800
+                                            {% elif application.status|default:'' == 'REJECTED' %}bg-red-100 text-red-800
+                                            {% elif application.status|default:'' == 'INTERVIEW' %}bg-green-100 text-green-800
+                                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+
+                                        <i class="fas fa-circle mr-1.5 text-xs 
+                                                {% if application.status|default:'' == 'APPLIED' %}text-blue-500
+                                                {% elif application.status|default:'' == 'REJECTED' %}text-red-500
+                                                {% elif application.status|default:'' == 'INTERVIEW' %}text-green-500
+                                                {% else %}text-gray-500{% endif %}"></i>
+
+                                        {{ application.status }}
+                                    </span>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{% url 'job_advert' application.job_advert.id %}" target="_blank"
+                                    class="text-green-600 hover:text-green-900 transition-colors">
+                                    <i class="fas fa-eye mr-1"></i>
+                                    View
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ application.created_at|date:"M d, Y" }}</div>
+                                <div class="text-sm text-gray-500">{{ application.created_at|date:"g:i A" }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <form method="post" action="{% url 'decide' application.id %}"
+                                    class="flex items-center gap-2">
                                     {% csrf_token %}
-                                    <select name="status"  {% if application.status != 'APPLIED' %} disabled {% endif %}>
-                                        <option value='APPLIED' {% if application.status == 'APPLIED' %} selected {% endif %}>APPLIED</option>
-
-                                        <option value='REJECTED' {% if application.status == 'REJECTED' %} selected {% endif %}>REJECTED</option>
-
-                                        <option value='INTERVIEW' {% if application.status == 'INTERVIEW' %} selected {% endif %}>INTERVIEW</option>
-
+                                    <select name="status"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 {% if application.status|default:"" != "
+                                        APPLIED" %}bg-gray-100 cursor-not-allowed{% endif %}" {% if
+                                        application.status|default:"" !="APPLIED" %} disabled {% endif %}>
+                                        <option value='APPLIED' {% if application.status|default:""=='APPLIED' %}
+                                            selected {% endif %}>APPLIED</option>
+                                        <option value='REJECTED' {% if application.status|default:""=='REJECTED' %}
+                                            selected {% endif %}>REJECTED</option>
+                                        <option value='INTERVIEW' {% if application.status|default:""=='INTERVIEW' %}
+                                            selected {% endif %}>INTERVIEW</option>
                                     </select>
-                                    <button class="" type="submit" {% if application.status != 'APPLIED' %} disabled {% endif %}>Decide
+                                    <button
+                                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 {% if application.status|default:"" != 'APPLIED' %}bg-gray-400 cursor-not-allowed hover:bg-gray-400{% endif %}"
+                                        type="submit" {% if application.status|default:"" !='APPLIED' %} disabled {%
+                                        endif %}>
+                                        <i class="fas fa-check mr-1"></i>
+                                        Decide
                                     </button>
-
                                 </form>
-                            </span>
-                        </td>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="px-8 py-12 text-center">
+                                <div
+                                    class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-users text-gray-400 text-2xl"></i>
+                                </div>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No applications found</h3>
+                                <p class="text-gray-500 mb-6">Applications will appear here once candidates apply to
+                                    your job posting</p>
 
-                    </tr>
-                {% empty %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                <tr>
-                    <td colspan="12">No applicants found.</td>
-                </tr>
-                {% endfor %}
-                
-               
-            </tbody>
-        </table>
-    </div>
+        <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    {% if applications.has_previous %}
+                    <a class="px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                        href="?page={{ applications.previous_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">
+                        <i class="fas fa-chevron-left mr-1"></i>
+                        Previous
+                    </a>
+                    {% else %}
+                    <span
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-lg cursor-not-allowed opacity-50">
+                        <i class="fas fa-chevron-left mr-1"></i>
+                        Previous
+                    </span>
+                    {% endif %}
 
-</div>
+                    <span class="px-3 py-2 text-sm font-medium text-gray-700 bg-blue-50 rounded-lg">
+                        Page {{ applications.number }} of {{ applications.paginator.num_pages }}
+                    </span>
 
-<section class="container">
-    <div class="pagination">
-        <div class="step-links">
-            {% if applications.has_previous %}
-            <a class="pagination-link"
-                href="?page={{ applications.previous_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">«
-                Previous</a>
-            {% else %}
-            <span class="pagination-disabled">« Previous</span>
-            {% endif %}
+                    {% if applications.has_next %}
+                    <a class="px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                        href="?page={{ applications.next_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">
+                        Next
+                        <i class="fas fa-chevron-right ml-1"></i>
+                    </a>
+                    {% else %}
+                    <span
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-lg cursor-not-allowed opacity-50">
+                        Next
+                        <i class="fas fa-chevron-right ml-1"></i>
+                    </span>
+                    {% endif %}
+                </div>
 
-            <span class="pagination-current">
-                Page {{ applications.number }} of {{ applications.paginator.num_pages }}
-            </span>
+                <div class="text-sm text-gray-500">
+                    Showing {{ applications.start_index }} to {{ applications.end_index }}
+                    of {{ applications.paginator.count }} results
+                </div>
 
-            {% if applications.has_next %}
-            <a class="pagination-link"
-                href="?page={{ applications.next_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">Next
-                »</a>
-            {% else %}
-            <span class="pagination-disabled">Next »</span>
-            {% endif %}
+            </div>
         </div>
     </div>
-</section>
+</main>
 
 {% endblock %}

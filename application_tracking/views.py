@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.shortcuts import render, redirect
 from application_tracking.enums import ApplicationStatus
 from common.tasks import send_email
@@ -47,9 +48,10 @@ def list_adverts(request: HttpRequest):
     
     return render(request, 'home.html', context)
     
-def get_advert(request: HttpRequest, advert_id: int):
+def get_advert(request: HttpRequest, advert_id):
     form = JobApplicationForm()
     job_advert = get_object_or_404(JobAdvert, id=advert_id)
+    job_advert.skills_list = job_advert.skills.split(',') if job_advert.skills else []
     context = {
         'job_advert': job_advert,
         'application_form': form
@@ -127,7 +129,24 @@ def my_applications(request: HttpRequest):
 @login_required
 def my_jobs(request: HttpRequest):
     user: User = request.user
+    today = timezone.now().date()
     jobs = JobAdvert.objects.filter(created_by = user)
+    
+    for job in jobs:
+        if job.deadline:
+            delta = job.deadline - today
+            if delta.days > 30:
+                job.time_left = f"{delta.days // 30} months left"
+            elif delta.days > 0:
+                job.time_left = f"{delta.days} days left"
+            elif delta.days == 0:
+                job.time_left = "Today"
+            else:
+                job.time_left = "Expired"
+        else:
+            job.time_left = "No deadline"
+
+        
     
     paginator = Paginator(jobs, 10)
     request_page = request.GET.get('page')
@@ -135,7 +154,7 @@ def my_jobs(request: HttpRequest):
     
     context = {
         'my_jobs': paginated_jobs,
-        'current_date': timezone.now().date()
+        'current_date': timezone.now().date(),
     }
     
     return render(request, 'my_jobs.html', context)
@@ -180,6 +199,18 @@ def decide(request: HttpRequest, job_application_id: int):
                 f'Application Outcome for {job_application.job_advert.title}',
                 [job_application.email],
                 'emails/job_application_update.html',
+                context
+            )
+        elif status == ApplicationStatus.INTERVIEW:
+            context = {
+                'applicant_name': job_application.name,
+                'job_title': job_application.job_advert.title,
+                'company_name': job_application.job_advert.company_name,
+            }
+            send_email.delay(
+                f'Interview Invitation for {job_application.job_advert.title}',
+                [job_application.email],
+                'emails/job_application_interview.html',
                 context
             )
             

@@ -1,33 +1,178 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block title %} {{ job_advert.title }} - Job Details {% endblock %}
 
 {% block content %}
 
 {% include 'header.html' %}
-<section class="detail-page">
-  <div class="detail-container">
-    <div class="job-detail">
-      <h2>{{ job_advert.title }}</h2>
-      <p><strong>Company:</strong> {{ job_advert.company_name }}</p>
-      <p><strong>Employment Type:</strong> {{ job_advert.job_type }}</p>
-      <p><strong>Location:</strong> {{ job_advert.location }}</p>
-      <p><strong>Experience Level:</strong> {{ job_advert.experience_level }}</p>
-      <p><strong>Skills:</strong> {{ job_advert.skills }}</p>
-      <p><strong>Description:</strong></p>
-      <p>{{ job_advert.description }}</p>
-      <p><strong>Application Deadline:</strong> {{ job_advert.deadline }}</p>
-      <p><strong>Posted:</strong> {{ job_advert.created_at | timesince }}</p>
-    </div>
-    <div class="application-form">
+<main class="py-12 px-4">
+  <div class="max-w-7xl mx-auto">
 
-      <h3>Apply for this Job</h3>
-      <form action="{% url 'apply_for_job' job_advert.id %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{application_form.as_p}}
-        <button type="submit" class="btn">Submit Application</button>
-      </form>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 px-8 py-8">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-chart-line text-3xl text-white"></i>
+                  </div>
+                  <div>
+                    <h1 class="text-3xl font-bold text-white mb-2">{{ job_advert.title }}</h1>
+                    <p class="text-blue-100 text-lg">
+                      {{ job_advert.company_name }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <i class="fas fa-clock mr-2"></i>{{ job_advert.job_type }}
+                  </span>
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <i class="fas fa-map-marker-alt mr-2"></i>{{ job_advert.location }}
+                  </span>
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                    <i class="fas fa-chart-line mr-2"></i>{{ job_advert.experience_level }}
+                  </span>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+          <div class="p-8">
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-tools text-blue-500"></i>
+                Required Skills
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {% for skill in job_advert.skills_list %}
+                <span class="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+                  {{ skill }}
+                </span>
+                {% endfor %}
+              </div>
+            </div>
+
+
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-align-left text-blue-500"></i>
+                Job Description
+              </h3>
+              <div class="prose prose-gray max-w-none">
+                <p class="text-gray-700 leading-relaxed">
+                  {{ job_advert.description }}
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-gray-50 rounded-xl p-6">
+                <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <i class="fas fa-building text-blue-500"></i>
+                  Application Deadline
+                </h4>
+                <p class="text-gray-600">{{ job_advert.deadline }}</p>
+              </div>
+
+              <div class="bg-gray-50 rounded-xl p-6">
+                <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <i class="fas fa-clock text-blue-500"></i>
+                  Posted
+                </h4>
+                <p class="text-gray-600">{{ job_advert.created_at | timesince }} ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 sticky top-8">
+          <div class="text-center mb-6">
+            <div
+              class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-paper-plane text-xl text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Apply for this Job</h3>
+            <p class="text-gray-600 text-sm">Submit your application and take the next step in your
+              career</p>
+          </div>
+
+          <form class="space-y-4" method="post" action="{% url 'apply_for_job' job_advert.id %}"
+            enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ application_form.non_field_errors }}
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold text-sm">
+                <i class="fas fa-user text-blue-500 mr-2"></i>
+                Full Name *
+              </label>
+              {{ application_form.name }}
+              {{ application_form.name.errors }}
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold text-sm">
+                <i class="fas fa-envelope text-blue-500 mr-2"></i>
+                Email Address *
+              </label>
+              {{ application_form.email }}
+              {{ application_form.email.errors }}
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold text-sm">
+                <i class="fas fa-link text-blue-500 mr-2"></i>
+                Portfolio Link
+              </label>
+              {{ application_form.portfolio_url }}
+              {{ application_form.portfolio_url.errors }}
+              <p class="text-xs text-gray-500">Optional: Share your portfolio or LinkedIn profile</p>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold text-sm">
+                <i class="fas fa-file-upload text-blue-500 mr-2"></i>
+                CV/Resume *
+              </label>
+              {{ application_form.cv }}
+              {{ application_form.cv.errors }}
+              <p class="text-xs text-gray-500 mt-1">Accepted formats: PDF, DOC, DOCX (Max 5MB)</p>
+            </div>
+
+            <button type="submit"
+              class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200">
+              <i class="fas fa-paper-plane mr-2"></i>
+              Submit Application
+            </button>
+
+            <div class="bg-blue-50 rounded-xl p-3 border border-blue-200">
+              <h4 class="font-semibold text-blue-800 mb-2 flex items-center gap-2 text-sm">
+                <i class="fas fa-lightbulb text-blue-600"></i>
+                Application Tips
+              </h4>
+              <ul class="text-xs text-blue-700 space-y-1">
+                <li>• Ensure your CV is up-to-date</li>
+                <li>• Highlight relevant skills and experience</li>
+                <li>• Keep your cover letter concise</li>
+              </ul>
+            </div>
+          </form>
+
+        </div>
+      </div>
     </div>
   </div>
-</section>
+</main>
 {% endblock %}

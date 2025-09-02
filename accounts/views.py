@@ -4,7 +4,8 @@ from .models import User, PendingUser, Token, TokenType
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages, auth
 from django.utils.crypto import get_random_string
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
+from django.utils import timezone
 from common.tasks import send_email
 from django.contrib.auth import get_user_model
 from .decorators import redirect_authenticated_user
@@ -36,76 +37,116 @@ def logout(request: HttpRequest):
     return redirect('home')
 
 @redirect_authenticated_user
-def register(request: HttpRequest):
-    if request.method == 'POST':
-        email: str = request.POST['email']
-        password: str = request.POST['password']
-        cleaned_email = email.lower()
+def register(request):
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+        password = request.POST.get("password", "").strip()
 
-        # Check if email already exists in User
-        if User.objects.filter(email=cleaned_email).exists():
-            messages.error(request, 'Email already exists')
-            return redirect('register')
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return render(request, "register.html")
 
-        # Check if email is already pending
-        if PendingUser.objects.filter(email=cleaned_email).exists():
-            messages.error(request, 'A verification email has already been sent to this address.')
-            return redirect('register')
+        pending_user = PendingUser.objects.filter(email=email).first()
+        if pending_user:
+            verification_code = get_random_string(length=6)
+            pending_user.verification_code = verification_code
+            pending_user.created_at = timezone.now()
+            pending_user.save()
 
-        # Create pending user
+            send_email.delay(
+                'Verify your account',
+                [email],
+                'emails/email_verification_template.html',
+                context={'code': verification_code}
+            )
+
+            messages.info(request, "You already have a pending account. A new verification code has been sent.")
+            return render(request, 'verify_account.html', context={'email': email})
+
         verification_code = get_random_string(length=6)
-        PendingUser.objects.create(
-            email=cleaned_email,
-            password=make_password(password),
-            verification_code=verification_code,
-            created_at=datetime.now(timezone.utc)
-        )
+        PendingUser.objects.create(email=email, password=make_password(password), verification_code=verification_code, created_at=timezone.now())
+        
 
         send_email.delay(
             'Verify your account',
-            [cleaned_email],
+            [email],
             'emails/email_verification_template.html',
             context={'code': verification_code}
         )
 
-        messages.success(request, f'Verification code sent to {cleaned_email}')
-        return render(request, 'verify_account.html', context={'email': cleaned_email})
-
-    else:
-        return render(request, 'register.html')
+        messages.success(request, "Account created! Check your email for the verification code.")
+        return render(request, 'verify_account.html', context={'email': email}) 
+    return render(request, "register.html")
 
 
-def verify_account(request: HttpRequest):
+def verify_account(request):
+    email = request.POST.get('email') or request.GET.get('email', '')
+
     if request.method == 'POST':
-        code: str = request.POST['code']
-        email: str = request.POST['email']
+        code = request.POST.get('code', '').strip()
 
-        pending_user: PendingUser = PendingUser.objects.filter(
-            verification_code=code,
-            email=email
-        ).first()
+        if not code:
+            messages.error(request, "Please enter the verification code.")
+            return render(request, 'verify_account.html', {'email': email})
 
-        if pending_user:
-            # Create User manually
-            user = User(
-                email=pending_user.email,
-            )
-            # Directly assign the already hashed password
-            user.password = pending_user.password
+        pending_user = PendingUser.objects.filter(email=email, verification_code=code).first()
+
+        if pending_user.verification_code == code:
+            if not pending_user.is_valid():
+                messages.error(request, "Verification code expired. Please resend a new code.")
+                return render(request, "verify_account.html", {"email": email})
+            
+            user = User(email=pending_user.email)
+            user.password = pending_user.password 
             user.save()
 
-            # Delete pending record
             pending_user.delete()
 
-            # Log in user
             auth.login(request, user)
-            messages.success(request, 'Account verified')
+            messages.success(request, "Account verified!")
             return redirect('home')
         else:
-            messages.error(request, 'Invalid verification code')
+            messages.error(request, "Invalid verification code.")
             return render(request, 'verify_account.html', {'email': email}, status=400)
 
+    email = request.GET.get('email', '')
+    return render(request, 'verify_account.html', {'email': email})
 
+def resend_verification(request):
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+
+        if not email:
+            messages.error(request, "Email is required to resend verification code.")
+            return redirect("verify_account")  
+
+        pending_user = PendingUser.objects.filter(email=email).first()
+        if pending_user:
+            now = timezone.now()
+            cooldown = timedelta(minutes=5)  
+
+            if now - pending_user.created_at < cooldown:
+                messages.error(request, "You can request a new code only every 5 minutes.")
+                return render(request, "verify_account.html", {"email": email})
+
+            verification_code = get_random_string(length=6)
+            pending_user.verification_code = verification_code
+            pending_user.created_at = now
+            pending_user.save()
+
+            send_email.delay(
+                'Verify your account',
+                [email],
+                'emails/email_verification_template.html',
+                context={'code': verification_code}
+            )
+
+            messages.success(request, "A new verification code has been sent to your email.")
+        else:
+            messages.error(request, "No pending account found with this email.")
+        
+        return render(request, "verify_account.html", {"email": email})
+    
 def send_password_reset_link(request: HttpRequest):
     if request.method == 'POST':
         email:str = request.POST.get('email', '')
@@ -117,7 +158,7 @@ def send_password_reset_link(request: HttpRequest):
                 token_type = TokenType.PASSWORD_RESET,
                 defaults={
                     'token': get_random_string(length=20),
-                    'created_at': datetime.now(timezone.utc)
+                    'created_at': datetime.now()
                 }
             )
             

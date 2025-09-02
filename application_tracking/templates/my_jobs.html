@@ -1,106 +1,207 @@
 {% extends 'base.html' %}
 
-{% block title %} {{ job_advert.title }} - Job Details {% endblock %}
+{% block title %}My Job Adverts{% endblock %}
 
 {% block content %}
-
 {% include 'header.html' %}
+<main class="py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6">
+                <i class="fas fa-list-alt text-2xl text-white"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">My Job Adverts</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Manage and monitor all your job postings in one place. Track applications, edit details, and keep your
+                listings up to date.
+            </p>
+        </div>
 
-<div class="container">
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">Job Title</th>
-                    <th scope="col">Company Name</th>
-                    <th scope="col">Date Posted</th>
-                    <th scope="col">Deadline</th>
-                    <th scope="col">Open/Close</th>
-                    <th scope="col">Total Applicants</th>
-                    <th scope="col">View Applicants</th>
-                    <th scope="col">View Job</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if my_jobs %}
-                {% for job in my_jobs %}
-                <tr>
-                    <td>{{ job.title }}</td>
-                    <td>{{ job.company_name }}</td>
-                    <td>{{ job.created_at }}</td>
-                    <td>{{ job.deadline }}</td>
-                    <td>
-                        {% if job.deadline >= current_date %}
-                        <span style="color: green;">Open</span>
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 px-8 py-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <i class="fas fa-table"></i>
+                    Job Adverts Overview
+                </h2>
+                <p class="text-blue-100 mt-2">Manage your job postings and track applications</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Job Title</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Company Name</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Date Posted</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Deadline</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Status</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Applicants</th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% if my_jobs %}
+                        {% for job in my_jobs %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ job.title }}</div>
+                                <div class="text-sm text-gray-500">{{ job.experience_level }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ job.company_name }}</div>
+                                <div class="text-sm text-gray-500">{{ job.location }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ job.created_at|date:"M d, Y" }}</div>
+                                <div class="text-sm text-gray-500">{{ job.created_at|time:"P" }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ job.deadline|date:"M d, Y" }}</div>
+                                <div class="text-sm text-gray-500">{{ job.time_left }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if job.deadline and job.deadline >= current_date %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-circle text-green-500 mr-1.5 text-xs"></i>
+                                    Open
+                                </span>
+                                {% else %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <i class="fas fa-circle text-red-500 mr-1.5 text-xs"></i>
+                                    Closed
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <span class="text-sm font-medium text-purple-700">{{ job.total_applicants
+                                            }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex items-center space-x-2">
+                                    <a href="{% url 'advert_applications' job.id %}"
+                                        class="text-blue-600 hover:text-blue-900 transition-colors">
+                                        <i class="fas fa-users mr-1"></i> View
+                                    </a>
+                                    <a href="{% url 'job_advert' job.id %}"
+                                        class="text-green-600 hover:text-green-900 transition-colors">
+                                        <i class="fas fa-eye mr-1"></i> View
+                                    </a>
+                                    <a href="{% url 'update_advert' job.id %}"
+                                        class="text-yellow-600 hover:text-yellow-900 transition-colors">
+                                        <i class="fas fa-edit mr-1"></i> Edit
+                                    </a>
+                                    <form method='POST' action="{% url 'delete_advert' job.id %}">{% csrf_token %}
+                                        <button type="submit" class="text-red-600 hover:text-red-900 transition-colors">
+                                            <i class="fas fa-trash mr-1"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
                         {% else %}
-                        <span style="color: red;">Closed</span>
+                        <tr>
+                            <td colspan="7">
+                                <div class="px-8 py-12 text-center">
+                                    <div
+                                        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-briefcase text-gray-400 text-2xl"></i>
+                                    </div>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">No job adverts found</h3>
+                                    <p class="text-gray-500 mb-6">Get started by creating your first job posting</p>
+
+                                    <a href="{% url 'create_advert' %}">
+                                        <button type="button"
+                                            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200">
+                                            <i class="fas fa-plus mr-2"></i>
+                                            Create Job
+                                        </button>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                         {% endif %}
-                    </td>
-                    <td>{{ job.total_applicants }}</td>
-                    <td>
-                        <a href="{% url 'advert_applications' job.id %}" target="_blank">
-                            View applicants
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{% url 'job_advert' job.id %}" target="_blank">
-                            View job
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{% url 'update_advert' job.id %}" target="_blank">
-                            Edit
-                        </a>
-                    </td>
-                    <td>
-                        <form method='POST' action="{% url 'delete_advert' job.id %}">{% csrf_token %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                            <button type="submit" class='small-btn'>Delete</button>
+        <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    {% if my_jobs.has_previous %}
+                    <a href="?page={{ my_jobs.previous_page_number }}"
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-chevron-left mr-1"></i> Previous
+                    </a>
+                    {% else %}
+                    <span class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-50 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-chevron-left mr-1"></i> Previous
+                    </span>
+                    {% endif %}
+                    <span class="px-3 py-2 text-sm font-medium text-gray-700 bg-blue-50 rounded-lg">
+                        Page {{ my_jobs.number }} of {{ my_jobs.paginator.num_pages }}
+                    </span>
+                    {% if my_jobs.has_next %}
+                    <a href="?page={{ my_jobs.next_page_number }}"
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                        Next <i class="fas fa-chevron-right ml-1"></i>
+                    </a>
+                    {% else %}
+                    <span class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-50 rounded-lg cursor-not-allowed">
+                        Next <i class="fas fa-chevron-right ml-1"></i>
+                    </span>
+                    {% endif %}
+                </div>
 
-                        </form>
+                <div class="text-sm text-gray-500">
+                    Showing {{ my_jobs.start_index }} to {{ my_jobs.end_index }} of {{ my_jobs.paginator.count }}
+                    results
+                </div>
+            </div>
+        </div>
 
-                    </td>
-
-
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="12">No adverts found.</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-
-</div>
-
-<section class="container">
-    <div class="pagination">
-        <div class="step-links">
-            {% if my_jobs.has_previous %}
-            <a class="pagination-link"
-                href="?page={{ my_jobs.previous_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">«
-                Previous</a>
-            {% else %}
-            <span class="pagination-disabled">« Previous</span>
-            {% endif %}
-
-            <span class="pagination-current">
-                Page {{ my_jobs.number }} of {{ my_jobs.paginator.num_pages }}
-            </span>
-
-            {% if my_jobs.has_next %}
-            <a class="pagination-link"
-                href="?page={{ my_jobs.next_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">Next
-                »</a>
-            {% else %}
-            <span class="pagination-disabled">Next »</span>
-            {% endif %}
+        <div class="mt-8 flex justify-center">
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow w-full max-w-lg">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-plus text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Create New Job</h3>
+                        <p class="text-gray-600 text-sm">Post a new job opportunity</p>
+                    </div>
+                </div>
+                <a href="{% url 'create_advert' %}">
+                    <button type="button"
+                        class="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create Job
+                    </button>
+                </a>
+            </div>
         </div>
     </div>
-</section>
-
-{% endblock %}
+</main>
+{% endblock %}>

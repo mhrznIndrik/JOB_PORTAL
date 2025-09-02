@@ -47,10 +47,10 @@ def test_create_advert(authenticate_user_client):
         "employment_type": "Contract",
         "experience_level" : "Senior Level",
         "job_type": "Remote",
-        "location": "Kathmandu",       # added
+        "location": "Kathmandu",       
         "description": "Sample",
         "skills": "Python, Django",
-        "is_published": True,          # added
+        "is_published": True,          
         "deadline": "2025-02-01"
     }
 

@@ -35,6 +35,7 @@ class JobAdvert(BaseModel):
     experience_level = models.CharField(max_length=50, choices=ExperienceLevel)
     description = models.TextField()
     job_type = models.CharField(max_length=50, choices=LocationType)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     location = models.CharField(max_length=255, null=True, blank=True)
     is_published = models.BooleanField(default=True)
     deadline = models.DateField()

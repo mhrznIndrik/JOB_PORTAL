@@ -1,22 +1,19 @@
-<section class="homepage-header">
-    <div class="homepage-header-buttons">
-        <a href="/" >Home</a>
-        {% if user.is_authenticated %}
-
-        <a href="{% url 'create_advert' %}" class="">Create Advert</a>
-        <a href="{% url 'my_jobs' %}">My Jobs</a>
-        <a href="{% url 'my_applications' %}">My Applications</a>
-        <a href="{% url 'logout' %}">Logout</a>
-
-
-        {% else %}
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'register' %}">Register</a>
-        {% endif %}
+<header class="border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-10">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="{% url 'home' %}" class="flex items-center gap-2">
+            <span class="font-bold text-lg">JobPortal</span>
+        </a>
+        <nav class="hidden sm:flex items-center gap-6 text-sm">
+            {% if user.is_authenticated %}
+                <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a> 
+                <a href="{% url 'create_advert' %}" class="hover:text-blue-600">Post a Job</a> 
+                <a href="{% url 'my_jobs' %}" class="hover:text-blue-600">My Jobs</a>
+                <a href="{% url 'my_applications' %}" class="hover:text-blue-600">My Applications</a>
+                <a href="{% url 'logout' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">Login</a>
+                <a href="{% url 'register' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">Register</a>
+            {% endif %}
+        </nav>
     </div>
-    <h1>Find Your Dream Job <a style="font-size: larger;" href="/">🏠</a></h1>
-    <p>The swift way to hire, the smart way to find offers.</p>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        {% include 'alerts.html' %}
-    </div>
-</section>
+</header>

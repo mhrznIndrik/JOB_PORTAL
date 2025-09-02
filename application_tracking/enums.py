@@ -8,7 +8,7 @@ EmploymentType = [
     ('Temporary', 'Temporary'),
     ('Volunteer', 'Volunteer'),
     ('Other', 'Other'),
-]
+] 
 
 ExperienceLevel = [
     ('Entry Level', 'Entry Level'),

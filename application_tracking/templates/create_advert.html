@@ -6,17 +6,177 @@
 
 {% include 'header.html' %}
 
-<section class="detail-page">
-  <div class="detail-container container">
-    <div class="job-detail">
-      <h2>{{title}}</h2>
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{job_advert_form.as_p}}
-        <button type="submit" class="btn">{{btn_text}}</button>
-      </form>
+<body class="bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 min-h-screen"></body>
+<main class="py-12 px-4">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6">
+        <i class="fas fa-plus text-2xl text-white"></i>
+      </div>
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">Create New Job Advert</h1>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        Fill out the form below to create an attractive job posting that will help you find the perfect
+        candidate.
+      </p>
     </div>
 
+    <div
+      class="bg-white rounded-3xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),_0_10px_10px_-5px_rgba(0,0,0,0.04)] overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-6 rounded-t-3xl">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+          <i class="fas fa-edit"></i>
+          Job Details
+        </h2>
+        <p class="text-blue-100 mt-2">Complete all required fields to publish your job advert</p>
+      </div>
+
+      <form class="p-8 space-y-8" method="POST">
+        {% csrf_token %}
+        {{ job_advert_form.non_field_errors }}
+        <div class="space-y-6">
+          <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3">
+            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+            Basic Information
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold">
+                <i class="fas fa-briefcase text-blue-500 mr-2"></i>
+                Job Title *
+              </label>
+              {{ job_advert_form.title }}
+              {{ job_advert_form.title.errors }}
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold">
+                <i class="fas fa-building text-blue-500 mr-2"></i>
+                Company Name *
+              </label>
+              {{ job_advert_form.company_name }}
+              {{ job_advert_form.company_name.errors }}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold">
+                <i class="fas fa-clock text-blue-500 mr-2"></i>
+                Employment Type
+              </label>
+              {{ job_advert_form.employment_type }}
+              {{ job_advert_form.employment_type.errors }}
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold">
+                <i class="fas fa-chart-line text-blue-500 mr-2"></i>
+                Experience Level
+              </label>
+              {{ job_advert_form.experience_level }}
+              {{ job_advert_form.experience_level.errors }}
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold">
+                <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                Job Type
+              </label>
+              {{ job_advert_form.job_type }}
+              {{ job_advert_form.job_type.errors }}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold">
+                <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                Location *
+              </label>
+              {{ job_advert_form.location }}
+              {{ job_advert_form.location.errors }}
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-gray-700 font-semibold">
+                <i class="fas fa-dollar-sign text-blue-500 mr-2"></i>
+                Salary Range
+              </label>
+              {{ job_advert_form.salary }}
+              {{ job_advert_form.salary.errors }}
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-gray-700 font-semibold">
+              <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
+              Application Deadline
+            </label>
+            {{ job_advert_form.deadline }}
+            {{ job_advert_form.deadline.errors }}
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3">
+            <i class="fas fa-tools text-blue-500 mr-2"></i>
+            Required Skills
+          </h3>
+
+          <div class="space-y-2">
+            <label class="block text-gray-700 font-semibold">
+              <i class="fas fa-tags text-blue-500 mr-2"></i>
+              Skills (comma separated)
+            </label>
+            {{ job_advert_form.skills }}
+            {{ job_advert_form.skills.errors }}
+            <p class="text-sm text-gray-500">Separate multiple skills with commas</p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3">
+            <i class="fas fa-align-left text-blue-500 mr-2"></i>
+            Job Description
+          </h3>
+
+          <div class="space-y-2">
+            <label class="block text-gray-700 font-semibold">
+              <i class="fas fa-file-alt text-blue-500 mr-2"></i>
+              Detailed Description *
+            </label>
+            {{ job_advert_form.description }}
+            {{ job_advert_form.description.errors }}
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3">
+            <i class="fas fa-publish text-blue-500 mr-2"></i>
+            Publishing Options
+          </h3>
+
+          <div class="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            {{ job_advert_form.is_published }}
+            {{ job_advert_form.is_published.errors }}
+            <label for="publish-now" class="text-gray-700 font-medium cursor-pointer">
+              Publish this job advert immediately
+            </label>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+          <button type="submit"
+            class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200">
+            <i class="fas fa-paper-plane mr-2"></i>
+            {{btn_text}}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-</section>
+</main>
+</body>
 {% endblock %}

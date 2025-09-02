@@ -45,7 +45,7 @@ class Token(models.Model):
         return f"{self.user} {self.token}"
     
     def is_valid(self) -> bool:
-        lifetime_in_seconds = 20 * 60 # 20 minutes
+        lifetime_in_seconds = 20 * 60 
         now = datetime.now(timezone.utc)
         
         timediff = now - self.created_at

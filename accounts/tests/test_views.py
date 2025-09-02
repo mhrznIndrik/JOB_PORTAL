@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 
 pytestmark = pytest.mark.django_db
 
-def test_register_user(client: Client):  # <-- remove : Client
+def test_register_user(client: Client):  
     url = reverse('register')
     request_data = {
         'email': 'abc@gmail.com',
@@ -20,10 +20,8 @@ def test_register_user(client: Client):  # <-- remove : Client
 
     response = client.post(url, request_data)
 
-    # In most registration flows, the view redirects after success.
     assert response.status_code in [200, 302]
 
-    # Verify a pending user entry was created
     pending_user = PendingUser.objects.filter(email=request_data['email']).first()
     assert pending_user is not None
     assert check_password(request_data['password'], pending_user.password)

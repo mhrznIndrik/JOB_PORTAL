@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'application_tracking',
     'accounts',
+    'widget_tweaks',
 ]
 
 # custom user model

@@ -8,60 +8,176 @@
 
 {% include 'header.html' %}
 
-<div class="search-container">
-    <form action="{% url 'search' %}" method="GET" class="search-box">
-        <input type="text" name="keyword" placeholder="title, company, description, skills">
-        <input type="text" name="location" placeholder="location">
-        <button type="submit">Search</button>
-    </form>
-</div>
+<section class="relative">
+    <div class="absolute inset-0 -z-20 bg-cover bg-center"
+        style="background-image:url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1600&auto=format&fit=crop')">
+    </div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-white/40 via-white/30 to-white/50"></div>
+    <div class="absolute top-8 left-8 h-40 w-40 rounded-full bg-blue-200/60 blur-2xl animate-float"></div>
+    <div class="absolute top-24 right-8 h-48 w-48 rounded-full bg-indigo-200/60 blur-2xl animate-float"
+        style="animation-delay:1.5s"></div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div class="grid gap-10 lg:grid-cols-12 lg:items-center">
+            <div class="mt-12 max-w-5xl mx-auto animate-fade-in-up lg:col-span-12">
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
+                    Find your next opportunity
+                </h1>
+                <p class="mt-4 text-lg text-gray-900">
+                    Search thousands of jobs across top companies. Filter by role, keywords, and location.
+                </p>
 
-<section class="job-list">
+                <div class="mt-8 sm:mt-10">
+                    <form action="{% url 'search' %}" method="GET"
+                        class="bg-white rounded-full shadow-sm ring-1 ring-gray-200 p-2 sm:p-2 animate-fade-in">
+                        <div class="grid grid-cols-12 gap-2 sm:gap-0 items-center">
+                            <label class="col-span-5 relative block px-2">
+                                <span class="sr-only">Job title or keywords</span>
+                                <span
+                                    class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input type="text" name="keyword"
+                                    placeholder="Job title, company, description, skills..."
+                                    class="w-full rounded-full border-0 pl-10 pr-3 py-3 focus:outline-none focus:ring-0" />
+                            </label>
 
-    {% for advert in job_adverts %}
-    <div class="job-card">
-        <h3>{{advert.title}}</h3>
-        <p><strong>Company:</strong> {{advert.company_name}}</p>
-        <p><strong>Type:</strong> {{advert.job_type}}</p>
-        <p><strong>Posted:</strong> {{advert.created_at | naturalday | title}}</p>
-        <p><strong>Skills:</strong>{{advert.skills|truncatechars:14}}</p>
-        <a class="small-btn" href="{% url 'job_advert' advert.id %}">View Details</a>
+                            <div class="flex col-span-1 items-center justify-center">
+                                <span class="h-8 w-px bg-gray-200"></span>
+                            </div>
 
+                            <label class="col-span-4 relative block px-2">
+                                <span class="sr-only">Location</span>
+                                <span
+                                    class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.05 4.05a7 7 0 119.9 9.9L10 19.9l-4.95-5.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input type="text" name="location" id="location" placeholder="Location"
+                                    class="w-full rounded-full border-0 pl-10 pr-3 py-3 focus:outline-none focus:ring-0" />
+                            </label>
+
+                            <div class="col-span-2">
+                                <button type="submit"
+                                    class="w-full h-full inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 text-white font-medium px-6 py-3 transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <span>Search Jobs</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                        class="w-5 h-5">
+                                        <path
+                                            d="M13.5 4.5a.75.75 0 000 1.5h4.19l-9.72 9.72a.75.75 0 101.06 1.06L18.75 7.06v4.19a.75.75 0 001.5 0v-6a.75.75 0 00-.75-.75h-6z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="mt-12 pt-5 flex justify-center">
+                        <a href="#benefits"
+                            class="inline-flex items-center justify-center rounded-full bg-blue-600 text-white p-3 sm:p-4 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition animate-fade-in animate-bounce"
+                            aria-label="Scroll down">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-5 h-5 sm:w-6 sm:h-6">
+                                <path fill-rule="evenodd"
+                                    d="M12 16a.75.75 0 01-.53-.22l-5-5a.75.75 0 111.06-1.06L12 14.19l4.47-4.47a.75.75 0 111.06 1.06l-5 5A.75.75 0 0112 16z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="benefits" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-16 pb-20">
+    <div class="flex items-end justify-between">
+        <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Recent Jobs</h2>
+            <p class="mt-1 text-gray-600">Explore fresh openings across top companies.</p>
+        </div>
     </div>
 
-    {% empty %}
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for advert in job_adverts %}
+        <article class="bg-white rounded-xl p-6 ring-1 ring-gray-200 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center gap-3">
+                <div
+                    class="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 text-white flex items-center justify-center font-semibold">
+                    {{ advert.company_name|slice:":1" }}
+                </div>
+                <div>
+                    <h3 class="font-semibold">{{ advert.title }}</h3>
+                    <p class="text-sm text-gray-500">{{ advert.company_name }} </p>
+                    <p class="text-sm text-gray-500">{{ advert.location }} </p>
+
+                </div>
+            </div>
+            <p class="mt-3 text-sm text-gray-600">{{ advert.skills }}</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                <span class="px-2 py-1 rounded-full bg-gray-50 text-gray-700 ring-1 ring-gray-200">{{ advert.job_type
+                    }}</span>
+                {% if advert.salary %}
+                <span class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">{{
+                    advert.salary|intcomma }}</span>
+                {% endif %}
+            </div>
+            <div class="mt-5 flex items-center justify-between">
+                <span class="text-xs text-gray-500">Posted {{ advert.created_at | naturalday | title }} </span>
+                <a href="{% url 'job_advert' advert.id %}"
+                    class="inline-flex items-center gap-2 rounded-full bg-blue-600 text-white px-4 py-2 text-sm hover:bg-blue-700">
+                    View Details
+                </a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    {% if not job_adverts %}
     <div>
         <p>No adverts available</p>
     </div>
-
-    {% endfor %}
+    {% endif %}
 </section>
 
+
 <section>
-    <div class="pagination">
-        <div class="step-links">
+    <div class="flex justify-center mt-10">
+        <div class="inline-flex items-center gap-3 bg-white shadow-sm px-4 py-2 rounded-full ring-1 ring-gray-200">
+
             {% if job_adverts.has_previous %}
-            <a class="pagination-link"
-                href="?page={{ job_adverts.previous_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">«
-                Previous</a>
+            <a class="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-full transition"
+                href="?page={{ job_adverts.previous_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">
+                « Previous
+            </a>
             {% else %}
-            <span class="pagination-disabled">« Previous</span>
+            <span class="px-3 py-1 text-sm font-medium text-gray-400 cursor-not-allowed">« Previous</span>
             {% endif %}
 
-            <span class="pagination-current">
+            <span class="px-4 py-1 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full">
                 Page {{ job_adverts.number }} of {{ job_adverts.paginator.num_pages }}
             </span>
 
             {% if job_adverts.has_next %}
-            <a class="pagination-link"
-                href="?page={{ job_adverts.next_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">Next
-                »</a>
+            <a class="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-full transition"
+                href="?page={{ job_adverts.next_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">
+                Next »
+            </a>
             {% else %}
-            <span class="pagination-disabled">Next »</span>
+            <span class="px-3 py-1 text-sm font-medium text-gray-400 cursor-not-allowed">Next »</span>
             {% endif %}
         </div>
     </div>
 </section>
+
 
 
 {% endblock %}

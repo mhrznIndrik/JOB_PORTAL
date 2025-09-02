@@ -6,14 +6,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+   
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <title>EazyJobs Portal - {% block title %}{% endblock %}</title>
+   
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+   
+
+    <title>JobPortal - {% block title %}{% endblock %}</title>
 </head>
 
+
 <body>
+    {% include "alerts.html" %}
     {% block content %}
     {% endblock %}
+    {% include 'footer.html' %}
     <script src="{% static 'main.js' %}"></script>
 </body>
 
