@@ -23,7 +23,7 @@ A full‑stack Django application for posting jobs and tracking applications. It
 ### 1) Clone and enter the project
 
 ```bash
-git clone <your-fork-or-repo-url>
+git clone https://github.com/mhrznIndrik/JOB_PORTAL.git
 cd JOB_PORTAL
 ```
 
